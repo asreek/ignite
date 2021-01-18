@@ -113,15 +113,15 @@ def getMessagesfromProxy():
 
 def loadGTPIETypeGrammerData():
     global ieLocation
-    sheet = workbook.sheet_by_index(2)
-    rows = sheet.nrows
-    cols = sheet.ncols
+    sheet = workbook.worksheets[2]
+    rows = sheet.max_row
+    cols = sheet.max_column
     reg_ex1 = "Type\s*=\s*(\d+)\s*\((.*)\)"
     reg_ex3 = "IE Definition End\s*:(.*)"
     ieLocation={}
     ie=0
-    for row in range(rows):
-        for col in range(cols):
+    for row in range(1, rows+1):
+        for col in range(1, cols+1):
             cell = sheet.cell(row, col)
             match = re.search(reg_ex1,str(cell.value))
             match1 = re.search(reg_ex3,str(cell.value))

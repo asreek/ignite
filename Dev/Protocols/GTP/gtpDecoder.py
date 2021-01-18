@@ -97,9 +97,9 @@ def decodeGTP(buf,ie_location):
 def decodeIE(buf,ie_location):
 	try:
 		global data, index, length
-		sheet = workbook.sheet_by_index(2)
-		rows = sheet.nrows
-		cols = sheet.ncols
+		sheet = workbook.worksheets[2]
+		rows = sheet.max_row
+		cols = sheet.max_column
 		reg_ex1 = "Type\s*=\s*(\d+)\s*\((.*)\)"
 		reg_ex2 = "(.*):Type\[(\w*)\].*"
 		reg_ex22 = "(.*):Type\[(\w*)\]:Condition\[(.*)\].*"
@@ -141,8 +141,8 @@ def decodeIE(buf,ie_location):
 				match = re.search(reg_ex2, str(cell.value))
 				match1 = re.search(reg_ex22, str(cell.value))
 				# if reg_ex2 matches, capture the ie_name and ie_dataType from the cell
-				name = ""
-				data_type = ""
+				name = None
+				data_type = None
 				if match:
 					name =  str(match.group(1).lower())
 					data_type = str(match.group(2).lower())
@@ -221,7 +221,7 @@ def decodeIE(buf,ie_location):
 					for col in range(lcol, hcol):
 						cell = sheet.cell(row, col)
 						# Check if the next cell is empty (meaning merged cell, so bit_count will increase)
-						if sheet.cell(row, col+1).value == "":
+						if sheet.cell(row, col+1).value == None:
 							# If it is last column, the above logic will not hold true
 							if col+1==hcol:
 								cell = sheet.cell(row, col-bit_count+1)
@@ -247,7 +247,7 @@ def decodeIE(buf,ie_location):
 							for i in range (0, bit_count):
 								binary = binary + "1"
 							operand = int(binary, 2)
-							field_value = (val>>(8-(col-2))) & operand
+							field_value = (val>>(8-(col-3))) & operand
 							# add the data to the field
 							ie_data[cell.value.lower()] = field_value
 							bit_count = 1

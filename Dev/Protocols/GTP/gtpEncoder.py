@@ -98,10 +98,10 @@ def encodeIE(test_dict,ie_location):
 		global index, buf, ieLength
 
 		
-		sheet = workbook.sheet_by_index(2)
+		sheet = workbook.worksheets[2]
 
-		rows = sheet.nrows
-		cols = sheet.ncols
+		rows = sheet.max_row
+		cols = sheet.max_column
 		
 		# Defining Regular-Expressions for matching strings with excel cell data
 		reg_ex1 = "Type\s*=\s*(\d+)\s*\((.*)\)"
@@ -163,7 +163,7 @@ def encodeIE(test_dict,ie_location):
 					for col in range(lcol, hcol):
 						cell = sheet.cell(row, col)
 						# If the next cell is empty, either merged cell or last cell
-						if sheet.cell(row, col+1).value == "":
+						if sheet.cell(row, col+1).value == None:
 							if col+1==hcol:
 								cell = sheet.cell(row, col-bit_count+1)
 								if cell.value == "Spare":
@@ -180,7 +180,7 @@ def encodeIE(test_dict,ie_location):
 							if cell.value == "Spare":
 								val = val | 0
 							else:
-								val = val | test_dict[cell.value.lower()]<<(10-col)
+								val = val | test_dict[cell.value.lower()]<<(11-col)
 							bit_count = 1
 							continue
 			# Finally call method to pack
