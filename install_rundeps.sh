@@ -34,14 +34,16 @@ install_run_pkg_deps() {
        }
 
 install_run_dep_lib() {
+	$SUDO python3 -m pip install --upgrade pip && \
         $SUDO python3 -m pip install \
         asn1tools==0.137.4 \
-        xlrd \
+        xlrd==1.2.0 \
         pysctp \
         robotframework \
         robotframework-sshlibrary \
         robotframework-requests \
-        flask
+        flask\
+	setuptools-rust
 }
 
 install_crypto_mobile() {

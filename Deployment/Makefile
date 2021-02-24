@@ -5,10 +5,10 @@ MAKEDIR		:= $(dir $(realpath $(firstword $(MAKEFILE_LIST))))
 WORKSPACE	?= .
 VENV		?= $(BUILD)/venv/migutbox
 
-KUBESPRAY_VERSION ?= release-2.11
-DOCKER_VERSION	?= 18.09
-K8S_VERSION	?= v1.15.3
-HELM_VERSION	?= v2.16.1
+KUBESPRAY_VERSION ?= release-2.15.0
+DOCKER_VERSION	?= 20.10
+K8S_VERSION	?= v1.17
+HELM_VERSION	?= v3.5.0
 
 cpu_family	:= $(shell lscpu | grep 'CPU family:' | awk '{print $$3}')
 cpu_model	:= $(shell lscpu | grep 'Model:' | awk '{print $$2}')
