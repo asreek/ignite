@@ -5,10 +5,10 @@ MAKEDIR		:= $(dir $(realpath $(firstword $(MAKEFILE_LIST))))
 WORKSPACE	?= .
 VENV		?= $(BUILD)/venv/migutbox
 
-KUBESPRAY_VERSION ?= release-2.11
-DOCKER_VERSION	?= 18.09
-K8S_VERSION	?= v1.15.3
-HELM_VERSION	?= v2.16.1
+KUBESPRAY_VERSION ?= v2.15.0
+DOCKER_VERSION	?= 19.03
+K8S_VERSION	?= v1.19.7
+HELM_VERSION	?= v3.3.4
 
 cpu_family	:= $(shell lscpu | grep 'CPU family:' | awk '{print $$3}')
 cpu_model	:= $(shell lscpu | grep 'Model:' | awk '{print $$2}')
@@ -57,7 +57,7 @@ $(M)/setup: | $(M)
 
 $(BUILD)/kubespray: | $(M)/setup
 	mkdir -p $(BUILD)
-	cd $(BUILD); git clone https://github.com/kubernetes-incubator/kubespray.git -b $(KUBESPRAY_VERSION)
+	cd $(BUILD); git clone https://github.com/kubernetes-sigs/kubespray.git -b $(KUBESPRAY_VERSION)
 
 $(VENV)/bin/activate: | $(M)/setup
 	sudo pip install virtualenv
@@ -92,23 +92,18 @@ $(M)/k8s-ready: | $(M)/setup $(BUILD)/kubespray $(VENV)/bin/activate $(M)/kubesp
 	kubectl wait pod -n kube-system --for=condition=Ready --all
 	touch $@
 	
-$(M)/helm-ready: | $(M)/k8s-ready
-	helm init --wait --client-only
-	helm repo add incubator https://kubernetes-charts-incubator.storage.googleapis.com/
-	touch $@
-	
-migutbox: | $(M)/helm-ready
+migutbox: | $(M)/k8s-ready
 	cd $(MAKEDIR)/helm-charts/; \
 	helm upgrade --install ignite ignite --namespace omec; \
 	helm upgrade --install omec-mme omec-mme --namespace omec
 	$(MAKEDIR)/wait_for_pods.sh omec
 
 reset-migutbox:
-	helm delete --purge omec-mme || true
-	helm delete --purge ignite
+	helm uninstall omec-mme --namespace omec || true
+	helm uninstall ignite --namespace omec
 	
 clean: reset-migutbox
-	helm delete --purge $(shell helm ls -q) || true
+	helm uninstall --namespace omec $(shell helm ls -q) || true
 	source "$(VENV)/bin/activate" && cd $(BUILD)/kubespray; \
 	ansible-playbook -b -i inventory/local/hosts.ini reset.yml
 	rm -rf $(M)
