@@ -15,10 +15,10 @@
 #
 
 import os, sys
-import xlrd
+import openpyxl
 
 gtp_grammar_file = os.path.join(os.path.dirname(__file__), 'gtpV2StackModel.xlsx')
-# Using xlrd modules to read from Excel workbook
-workbook = xlrd.open_workbook(gtp_grammar_file)
+# Using openpyxl modules to read from Excel workbook
+workbook = openpyxl.load_workbook(gtp_grammar_file)
 
 

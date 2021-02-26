@@ -18,7 +18,7 @@ os_release	:= $(shell lsb_release -r -s)
 HELM_GLOBAL_ARGS ?=
 
 #migsetup: $(M)/system-check $(M)/helm-ready
-migsetup:  $(M)/helm-ready
+migsetup:  $(M)/k8s-ready
 
 .PHONY: migsetup migutbox reset-migutbox clean
 

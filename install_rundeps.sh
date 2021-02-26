@@ -37,7 +37,7 @@ install_run_dep_lib() {
 	$SUDO python3 -m pip install --upgrade pip && \
         $SUDO python3 -m pip install \
         asn1tools==0.137.4 \
-        xlrd==1.2.0 \
+        openpyxl \
         pysctp \
         robotframework \
         robotframework-sshlibrary \
